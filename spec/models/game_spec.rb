@@ -25,9 +25,9 @@ RSpec.describe Game, type: :model do
       expect {
         game = Game.create_game_for_user!(user)
       }.to change(Game, :count).by(1).and(# проверка: Game.count изменился на 1 (создали в базе 1 игру)
-        change(GameQuestion, :count).by(15).and(# GameQuestion.count +15
-          change(Question, :count).by(0) # Game.count не должен измениться
-        )
+          change(GameQuestion, :count).by(15).and(# GameQuestion.count +15
+              change(Question, :count).by(0) # Game.count не должен измениться
+          )
       )
       # проверяем статус и поля
       expect(game.user).to eq(user)
@@ -59,6 +59,44 @@ RSpec.describe Game, type: :model do
       # игра продолжается
       expect(game_w_questions.status).to eq(:in_progress)
       expect(game_w_questions.finished?).to be_falsey
+    end
+
+    it '.take_money!' do
+      game_w_questions.current_level = Question::QUESTION_LEVELS.to_a.sample
+      game_w_questions.take_money!
+
+      #проверка что выйгрышь соответствует своему уровню
+      expect(game_w_questions.prize).to eq Game::PRIZES[game_w_questions.current_level - 1]
+      #проверка, что игроку выйгрышь пришёл на баланс
+      expect(user.balance).to eq game_w_questions.prize
+      # --//-- что игра окончена
+      expect(game_w_questions.finished?).to be_truthy
+    end
+
+    context 'correct .status' do
+      before(:each) do
+        game_w_questions.finished_at = Time.current
+      end
+
+      it ':won' do
+        game_w_questions.current_level = Question::QUESTION_LEVELS.max + 1
+        expect(game_w_questions.status).to eq(:won)
+      end
+
+      it ':money' do
+        expect(game_w_questions.status).to eq(:money)
+      end
+
+      it ':fail' do
+        game_w_questions.is_failed = true
+        expect(game_w_questions.status).to eq(:fail)
+      end
+
+      it ':timeout' do
+        game_w_questions.created_at = 40.minutes.ago
+        game_w_questions.is_failed = true
+        expect(game_w_questions.status).to eq(:timeout)
+      end
     end
   end
 end
