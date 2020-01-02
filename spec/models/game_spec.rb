@@ -106,5 +106,23 @@ RSpec.describe Game, type: :model do
         expect(game_w_questions.status).to eq(:timeout)
       end
     end
+
+    context '.answer_current_question!' do
+      let!(:q_cak) { game_w_questions.current_game_question.correct_answer_key }
+
+      it 'be_truthy' do
+        expect(game_w_questions.answer_current_question!(q_cak)).to be_truthy
+      end
+
+      it 'increase current_level' do
+        expect { game_w_questions.answer_current_question!(q_cak) }.to change(game_w_questions, :current_level).by(1)
+      end
+
+      it 'finished game after last question' do
+        game_w_questions.current_level = Question::QUESTION_LEVELS.max
+        expect { game_w_questions.answer_current_question!(q_cak) }.to change(game_w_questions, :status)
+                                                                           .from(:in_progress).to(:won)
+      end
+    end
   end
 end
