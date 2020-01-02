@@ -82,11 +82,9 @@ RSpec.describe Game, type: :model do
     end
 
     context 'correct .status' do
-      #before(:each) do
-      #  game_w_questions.finished_at = Time.current
-      #end
-      let! { game_w_questions.finished_at = Time.current }
-
+      before(:each) do
+        game_w_questions.finished_at = Time.current
+      end
 
       it ':won' do
         game_w_questions.current_level = Question::QUESTION_LEVELS.max + 1
