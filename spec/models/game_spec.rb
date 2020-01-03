@@ -77,8 +77,31 @@ RSpec.describe Game, type: :model do
       expect(game_w_questions.current_game_question).to eq(game_w_questions.game_questions[0])
     end
 
-    it '.previous_level' do
-      expect(game_w_questions.previous_level).to eq(-1)
+    describe '#previous_level' do
+      context 'in the beginning of the game' do
+        it 'returns right value' do
+          expect(game_w_questions.previous_level).to eq(-1)
+        end
+      end
+
+      context 'during the game' do
+        it 'returns right value for each level' do
+          Question::QUESTION_LEVELS.max.times do
+            q_cak = game_w_questions.current_game_question.correct_answer_key
+            game_w_questions.answer_current_question!(q_cak)
+            expect(game_w_questions.previous_level).to eq(game_w_questions.current_level - 1)
+          end
+        end
+
+        context 'in the end of the game' do
+          it 'returns right value in the end' do
+            game_w_questions.current_level = Question::QUESTION_LEVELS.max
+            q_cak = game_w_questions.current_game_question.correct_answer_key
+            game_w_questions.answer_current_question!(q_cak)
+            expect(game_w_questions.previous_level).to eq(Question::QUESTION_LEVELS.max)
+          end
+        end
+      end
     end
 
     context 'correct .status' do
