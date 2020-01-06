@@ -62,10 +62,10 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to render_template('show') # и отрендерить шаблон show
     end
 
+    #юзер не видит не свою игру
     it 'cant #show not his game' do
       another_user = FactoryGirl.create(:user)
       another_game = FactoryGirl.create(:game_with_questions, user: another_user)
-
       get :show, id: another_game.id
 
       expect(response.status).not_to eq(200)
@@ -83,6 +83,16 @@ RSpec.describe GamesController, type: :controller do
       expect(game.current_level).to be > 0
       expect(response).to redirect_to(game_path(game))
       expect(flash.empty?).to be_truthy # удачный ответ не заполняет flash
+    end
+
+    it '#take money' do
+      game_w_questions.update_attribute(:current_level, 10)
+
+      put :take_money, id: game_w_questions.id
+      game = assigns(:game)
+
+      expect(game.finished?).to be_truthy
+      expect(game.prize).to eq(32000)
     end
 
     # тест на отработку "помощи зала"
