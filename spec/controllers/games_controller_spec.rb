@@ -112,5 +112,17 @@ RSpec.describe GamesController, type: :controller do
       expect(game.current_game_question.help_hash[:audience_help].keys).to contain_exactly('a', 'b', 'c', 'd')
       expect(response).to redirect_to(game_path(game))
     end
+
+    it '#goto_game_in_progress!' do
+      expect(game_w_questions.finished?).to be_falsey
+
+      generate_questions(15)
+      post :create
+      game = assigns(:game) # вытаскиваем из контроллера поле @game
+
+      expect(game).to be_nil
+      expect(response).to redirect_to(game_path(game_w_questions))
+      expect(flash[:alert]).to be
+    end
   end
 end
