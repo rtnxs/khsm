@@ -92,14 +92,14 @@ RSpec.describe Game, type: :model do
             expect(game_w_questions.previous_level).to eq(game_w_questions.current_level - 1)
           end
         end
+      end
 
-        context 'in the end of the game' do
-          it 'returns right value in the end' do
-            game_w_questions.current_level = Question::QUESTION_LEVELS.max
-            q_cak = game_w_questions.current_game_question.correct_answer_key
-            game_w_questions.answer_current_question!(q_cak)
-            expect(game_w_questions.previous_level).to eq(Question::QUESTION_LEVELS.max)
-          end
+      context 'in the end of the game' do
+        it 'returns right value in the end' do
+          game_w_questions.current_level = Question::QUESTION_LEVELS.max
+          q_cak = game_w_questions.current_game_question.correct_answer_key
+          game_w_questions.answer_current_question!(q_cak)
+          expect(game_w_questions.previous_level).to eq(Question::QUESTION_LEVELS.max)
         end
       end
     end
