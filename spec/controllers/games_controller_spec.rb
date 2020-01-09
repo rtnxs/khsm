@@ -160,6 +160,24 @@ RSpec.describe GamesController, type: :controller do
       expect(response).to redirect_to(game_path(game))
     end
 
+    it 'uses fifty fifty' do
+      # сперва проверяем что в подсказках текущего вопроса пусто
+      expect(game_w_questions.current_game_question.help_hash[:fifty_fifty]).not_to be
+      expect(game_w_questions.fifty_fifty_used).to be_falsey
+
+      # фигачим запрос в контроллен с нужным типом
+      put :help, id: game_w_questions.id, help_type: :fifty_fifty
+      game = assigns(:game)
+
+      # проверяем, что игра не закончилась, что флажок установился, и подсказка записалась
+      expect(game.finished?).to be_falsey
+      expect(game.fifty_fifty_used).to be_truthy
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to be
+      expect(game.current_game_question.help_hash[:fifty_fifty]).to include(game_w_questions.current_game_question.correct_answer_key)
+      expect(game.current_game_question.help_hash[:fifty_fifty].size).to eq 2
+      expect(response).to redirect_to(game_path(game))
+    end
+
     it '#goto_game_in_progress!' do
       expect(game_w_questions.finished?).to be_falsey
 
