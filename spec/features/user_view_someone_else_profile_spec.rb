@@ -1,14 +1,14 @@
 require 'rails_helper'
 
 RSpec.feature 'USER View someone else’s profile', type: :feature do
-  let(:user) { FactoryGirl.create :user, name: 'Jack' }
-  let(:user2) { FactoryGirl.create :user, name: 'Boby' }
+  let(:user) { FactoryBot.create :user, name: 'Jack' }
+  let(:user2) { FactoryBot.create :user, name: 'Boby' }
 
   let!(:games) do
     [
-      FactoryGirl.create(:game, id: 15, user: user2, current_level: 10, prize: 1000, finished_at: Time.current),
-      FactoryGirl.create(:game, id: 16, user: user2, current_level: 11, prize: 10000, finished_at: Time.current, is_failed: true),
-      FactoryGirl.create(:game, id: 17, user: user2, current_level: 12, prize: 20000)
+      FactoryBot.create(:game, id: 15, user: user2, current_level: 10, prize: 1000, finished_at: Time.current),
+      FactoryBot.create(:game, id: 16, user: user2, current_level: 11, prize: 10000, finished_at: Time.current, is_failed: true),
+      FactoryBot.create(:game, id: 17, user: user2, current_level: 12, prize: 20000)
     ]
   end
 

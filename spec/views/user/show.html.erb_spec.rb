@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'users/show', type: :view do
-  let!(:user) { FactoryGirl.build_stubbed(:user, name: 'Вадик', balance: 5000) }
-  let!(:games) { FactoryGirl.build_stubbed(:game, id: 15, created_at: Time.current, current_level: 10, prize: 1000) }
+  let!(:user) { FactoryBot.build_stubbed(:user, name: 'Вадик', balance: 5000) }
+  let!(:games) { FactoryBot.build_stubbed(:game, id: 15, created_at: Time.current, current_level: 10, prize: 1000) }
 
   before(:each) do
     assign(:user, user)
@@ -26,7 +26,7 @@ RSpec.describe 'users/show', type: :view do
   end
 
   context 'when user login' do
-    let!(:user) { FactoryGirl.create(:user) }
+    let!(:user) { FactoryBot.create(:user) }
 
     before(:each) do
       sign_in user
